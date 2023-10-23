@@ -7,7 +7,7 @@ install: build
 	pip3 install .
 
 devinstall: build
-
+	pip3 install -e .
 
 preview: build
 	python3 -m twine upload --repository-url "https://test.pypi.org/legacy/" dist/*
