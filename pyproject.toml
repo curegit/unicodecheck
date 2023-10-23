@@ -1,0 +1,37 @@
+[project]
+name = "unicodecheck"
+description = ""
+keywords = [""]
+requires-python = ">=3.10"
+readme = "README.md"
+license = {text = "MIT"}
+maintainers = [
+  {name = "curegit", email = "contact@curegit.jp"}
+]
+classifiers = [
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3 :: Only",
+  "Operating System :: OS Independent",
+  "Topic :: File Formats",
+  "Topic :: Text Processing",
+  "License :: Freeware",
+  "Typing :: Typed",
+]
+dynamic = ["version"]
+dependencies = [
+  'chardet', "rich"
+]
+
+[project.optional-dependencies]
+dev = ["build", "twine", "black"]
+
+[project.urls]
+homepage = "https://github.com/curegit/unicodecheck"
+repository = "https://github.com/curegit/unicodecheck.git"
+
+[build-system]
+requires = ["setuptools"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.dynamic]
+version = {attr = "unicodecheck.__version__"}
