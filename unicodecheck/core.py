@@ -32,10 +32,13 @@ def diff(str1, str2):
     d = difflib.Differ()
     dif = d.compare(str1.splitlines(), str2.splitlines())
     for line in dif:
+        #
+        #if line.startswith("+ ")
+        #if line.startswith("- ")
         print(line)
 
 def is_norm(str, mode):
-    return unicodedata.is_normalized(mode, str) 
+    return unicodedata.is_normalized(mode, str)
 
 def normalize():
     pass
