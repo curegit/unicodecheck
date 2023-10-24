@@ -1,5 +1,5 @@
-# 非空列を受ける変換関数
-def nonempty(str: str) -> str | None:
+# 入力パスを受ける変換関数（標準入力は None として返す）
+def src(str: str) -> str | None:
     if str == "--":
         return None
     elif str:
