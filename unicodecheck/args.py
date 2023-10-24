@@ -1,6 +1,8 @@
 # 非空列を受ける変換関数
-def nonempty(str: str) -> str:
-    if str:
+def nonempty(str: str) -> str | None:
+    if str == "--":
+        return None
+    elif str:
         return str
     else:
         raise ValueError()
