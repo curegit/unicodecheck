@@ -1,6 +1,6 @@
 # 入力パスを受ける変換関数（標準入力は None として返す）
 def src(str: str) -> str | None:
-    if str == "--":
+    if str == "-":
         return None
     elif str:
         return str
