@@ -2,16 +2,21 @@ import sys
 import glob
 import os.path
 from pathlib import Path
+from io import BufferedIOBase
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from rich.console import Console
 from rich.text import Text
-from .args import src, upper
+from .args import uint, src, upper
 from .core import is_binary, detect_unicode_enc, is_norm, normalize, diff
 
 
 def main() -> int:
     console = Console()
     error_console = Console(stderr=True)
+
+    def write(text: str | None = None) -> None:
+        if text is not None:
+            console.print(text, end="")
 
     def print(text: str | None = None) -> None:
         if text is not None:
@@ -44,10 +49,7 @@ def main() -> int:
             description="",
             prefix_chars="-",
         )
-        parser.add_argument(
-            "paths",
-            metavar="PATH",
-            type=src,
+        parser.add_argument("paths", metavar="PATH", type=src,
             nargs="+",
             # TODO
             help="describe input files",
@@ -63,18 +65,16 @@ def main() -> int:
         )
         # TODO
         parser.add_argument("-d", "--diff", action="store_true", help="")
+        parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", type=uint, nargs="?", const=3, help="diff with NUMBER lines of context")
         parser.add_argument("-r", "--recursive", action="store_true", help="")
-        parser.add_argument(
-            "-i",
-            "--include-hidden",
-            action="store_true",
-            help="include hidden directories",
-        )
+        parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden directories")
         parser.add_argument("-v", "--verbose", action="store_true", help="include hidden directories")
         args = parser.parse_args()
 
         mode: str = args.mode
         show_diff: bool = args.diff
+        unified_diff: bool = args.unified is not None
+        context_lines: int = 0 if args.unified is None else args.unified
         recursive: bool = args.recursive
         include_hidden: bool = args.include_hidden
         verbose: bool = args.verbose
@@ -118,22 +118,25 @@ def main() -> int:
             for f in files:
                 file = None
                 try:
+                    stream: bytes | BufferedIOBase
                     if f is None:
-                        fname = "<stdin>"
+                        fpath = "<stdin>"
+                        fname = fpath
                         stream = sys.stdin.buffer.read()
                     else:
-                        fname = str(f)
+                        fpath = str(f)
+                        fname = f.name
                         file = stream = open(f, "rb")
                     # バイナリファイルをフィルタ
                     if is_binary(stream):
                         if verbose:
-                            print_verbose(f"{fname}: Skip binary file")
+                            print_verbose(f"{fpath}: Skip binary file")
                         continue
                     # ユニコードの符号方式を調べる
                     encoding = detect_unicode_enc(stream)
                     if encoding is None:
                         if args.verbose:
-                            print_verbose(f"{fname}: Skip non-Unicode file")
+                            print_verbose(f"{fpath}: Skip non-Unicode file")
                         continue
                     # デコードをテスト
                     try:
@@ -142,23 +145,23 @@ def main() -> int:
                         else:
                             text = stream.read().decode(encoding)
                     except Exception:
-                        print_issue(f"{fname}: Invalid unicode (or misunderstanding encoding)")
+                        print_issue(f"{fpath}: Invalid unicode (or misunderstanding encoding)")
                         continue
                     # 正規形かテスト
                     if is_norm(text, mode):
                         if verbose:
-                            print_verbose(f"{fname}: OK ({mode})")
+                            print_verbose(f"{fpath}: OK ({mode})")
                         continue
                     # 正規形でない場合
-                    print_issue(f"{fname}: Not normalized in {mode}")
+                    print_issue(f"{fpath}: Not normalized in {mode}")
                     if show_diff:
                         normalized = normalize(text, mode)
-                        for line in diff(text, normalized):
-                            print(line)
+                        for line in diff(text, normalized, filename=fname, unified=unified_diff, n=context_lines):
+                            write(line)
                         print()
                 # 想定しないエラーを強調表示して続行（パーミッションエラーなど）
                 except Exception as e:
-                    print_error(f"{fname}: {e}")
+                    print_error(f"{fpath}: {e}")
                 # ファイルの後処理
                 finally:
                     if file is not None:

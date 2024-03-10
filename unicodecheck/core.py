@@ -1,12 +1,13 @@
 import os
 import difflib
 import unicodedata
-from io import BytesIO, BufferedReader
+from collections.abc import Iterable
+from io import BytesIO, IOBase
 from chardet import UniversalDetector
 
 
 # ファイルがバイナリかテキストか判定する
-def is_binary(stream: bytes | BufferedReader) -> bool:
+def is_binary(stream: bytes | IOBase) -> bool:
     if isinstance(stream, bytes):
         buf = stream
     else:
@@ -34,12 +35,12 @@ def is_binary(stream: bytes | BufferedReader) -> bool:
 
 # Unicode エンコードを検出して返す
 # utf-8, utf-16, utf-32 のどれでもない場合は None を返す
-def detect_unicode_enc(stream: bytes | BufferedReader) -> str | None:
+def detect_unicode_enc(stream: bytes | IOBase) -> str | None:
     match stream:
+        case IOBase() as b:
+            buf = b
         case bytes() as b:
             buf = BytesIO(b)
-        case BufferedReader() as b:
-            buf = b
         case _:
             return None
     pos = buf.tell()
@@ -57,14 +58,15 @@ def detect_unicode_enc(stream: bytes | BufferedReader) -> str | None:
         return None
 
 
-def diff(str1, str2):
-    d = difflib.Differ()
-    diffs = d.compare(str1.splitlines(), str2.splitlines())
-    for line in diffs:
-        # TODO
-        # if line.startswith("+ ")
-        # if line.startswith("- ")
-        yield line
+def diff(original: str, normalized: str, *, filename: str, unified=False, n=3) -> Iterable[str]:
+    a = original.splitlines(keepends=True)
+    b = normalized.splitlines(keepends=True)
+    if unified:
+        fromfile = filename
+        tofile = filename
+        return difflib.unified_diff(a, b, fromfile=fromfile, tofile=tofile, n=n)
+    else:
+        return difflib.ndiff(a, b)
 
 
 def is_norm(text: str, mode: str) -> bool:

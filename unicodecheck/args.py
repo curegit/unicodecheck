@@ -1,9 +1,17 @@
+# 非負整数を受ける変換関数
+def uint(string: str | int) -> int:
+    value = int(string)
+    if value >= 0:
+        return value
+    raise ValueError()
+
+
 # 入力パスを受ける変換関数（標準入力は None として返す）
-def src(str: str) -> str | None:
-    if str == "-":
+def src(string: str) -> str | None:
+    if string == "-":
         return None
-    elif str:
-        return str
+    elif string:
+        return string
     else:
         raise ValueError()
 
