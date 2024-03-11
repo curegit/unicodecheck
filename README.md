@@ -34,12 +34,6 @@ options:
 
 ## Tips
 
-### Normalize contents
-
-```sh
-
-```
-
 ### Check whether filenames are normalized
 
 `convmv` command is suitable.

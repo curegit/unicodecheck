@@ -6,7 +6,7 @@ from io import BytesIO, IOBase
 from chardet import UniversalDetector
 
 
-# ファイルがバイナリかテキストか判定する（空列なら None）
+# ファイルがバイナリかテキストか判定する (空列なら None)
 def is_binary(stream: bytes | IOBase) -> bool | None:
     if isinstance(stream, bytes):
         buf = stream
