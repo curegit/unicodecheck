@@ -40,7 +40,7 @@ options:
 
 ```
 
-### Check filenames are normalized
+### Check whether filenames are normalized
 
 `convmv` command is suitable.
 
@@ -59,7 +59,7 @@ convmv -f utf8 -t utf8 --nfd -r ./
 ## Notes
 
 - This tool doesn't provide auto in-place (write) file normalization because Unicode normalization doesn't guarantee content equivalence.
-- The procedure for determining the text file refers to Git's algorithm.
+- The procedure for determining the binary file refers to Git's algorithm.
 
 ## License
 
