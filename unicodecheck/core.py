@@ -6,8 +6,8 @@ from io import BytesIO, IOBase
 from chardet import UniversalDetector
 
 
-# ファイルがバイナリかテキストか判定する
-def is_binary(stream: bytes | IOBase) -> bool:
+# ファイルがバイナリかテキストか判定する（空列なら None）
+def is_binary(stream: bytes | IOBase) -> bool | None:
     if isinstance(stream, bytes):
         buf = stream
     else:
@@ -15,8 +15,10 @@ def is_binary(stream: bytes | IOBase) -> bool:
         stream.seek(-len(buf), os.SEEK_CUR)
         if not isinstance(buf, bytes):
             raise RuntimeError()
-    # BOM ベースの識別
     length = len(buf)
+    if length == 0:
+        return None
+    # BOM ベースの識別
     if length >= 4:
         head = buf[:2]
         if head == bytes.fromhex("FEFF") and length % 2 == 0:
@@ -62,8 +64,8 @@ def diff(original: str, normalized: str, *, filename: str, unified=False, n=3) -
     a = original.splitlines(keepends=True)
     b = normalized.splitlines(keepends=True)
     if unified:
-        fromfile = filename
-        tofile = filename
+        fromfile = filename + " <ORIGINAL>"
+        tofile = filename + " <NORMALIZED>"
         return difflib.unified_diff(a, b, fromfile=fromfile, tofile=tofile, n=n)
     else:
         return difflib.ndiff(a, b)

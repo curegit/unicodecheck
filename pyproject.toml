@@ -1,7 +1,7 @@
 [project]
 name = "unicodecheck"
-description = ""
-keywords = [""]
+description = "Check if Unicode text files are Unicode-normalized"
+keywords = ["Unicode", "character encoding"]
 requires-python = ">=3.10"
 readme = "README.md"
 license = {text = "MIT"}
@@ -12,18 +12,18 @@ classifiers = [
   "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Operating System :: OS Independent",
-  "Topic :: File Formats",
   "Topic :: Text Processing",
   "License :: Freeware",
   "Typing :: Typed",
 ]
 dynamic = ["version"]
-dependencies = [
-  'chardet', "rich"
-]
+dependencies = ["chardet", "rich"]
 
 [project.optional-dependencies]
-dev = ["build", "twine", "black"]
+dev = ["build", "twine", "black", "mypy"]
+
+[project.scripts]
+unicodecheck = "unicodecheck.cli:main"
 
 [project.urls]
 homepage = "https://github.com/curegit/unicodecheck"
@@ -32,6 +32,9 @@ repository = "https://github.com/curegit/unicodecheck.git"
 [build-system]
 requires = ["setuptools"]
 build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+include = ["unicodecheck*"]
 
 [tool.setuptools.dynamic]
 version = {attr = "unicodecheck.__version__"}

@@ -1,8 +1,8 @@
-# unicodecheck
+# Unicodecheck
 
-check if unicode text files are in canonical forms
+Simple tool to check if Unicode text files are Unicode-normalized
 
-## Insatall
+## Install
 
 ```sh
 pip3 install unicodecheck
@@ -10,12 +10,57 @@ pip3 install unicodecheck
 
 ## Usage
 
-## Tips:
+The main program can be invoked either through the `unicodecheck` command or through the Python main module option `python3 -m unicodecheck`.
 
-### Check file names
+```txt
+usage: unicodecheck [-h] [-V] [-m {NFC,NFD,NFKC,NFKD}] [-d] [-u [NUMBER]] [-r] [-i] [-v]
+                    PATH [PATH ...]
 
-### Check binary files
+positional arguments:
+  PATH                  describe input file or directory (pass '-' to specify stdin)
 
-## notes
-  - this tool doesnt provide auto format because canon hard to equivalence
-  - text files check refer git algorithm
+options:
+  -h, --help            show this help message and exit
+  -V, --version         show program's version number and exit
+  -m {NFC,NFD,NFKC,NFKD}, --mode {NFC,NFD,NFKC,NFKD}
+                        target Unicode normalization (default: NFC)
+  -d, --diff            show diffs between the original and normalized (default: False)
+  -u [NUMBER], -U [NUMBER], --unified [NUMBER]
+                        use unified diff with NUMBER lines of context [NUMBER=3] (default: None)
+  -r, --recursive       follow the file tree rooted in each PATH argument (default: False)
+  -i, --include-hidden  include hidden files and directories (default: False)
+  -v, --verbose         report non-essential logs (default: False)
+```
+
+## Tips
+
+### Normalize contents
+
+```sh
+
+```
+
+### Check filenames are normalized
+
+`convmv` command is suitable.
+
+#### NFC
+
+```sh
+convmv -f utf8 -t utf8 --nfc -r ./
+```
+
+#### NFD
+
+```sh
+convmv -f utf8 -t utf8 --nfd -r ./
+```
+
+## Notes
+
+- This tool doesn't provide auto in-place (write) file normalization because Unicode normalization doesn't guarantee content equivalence.
+- The procedure for determining the text file refers to Git's algorithm.
+
+## License
+
+MIT

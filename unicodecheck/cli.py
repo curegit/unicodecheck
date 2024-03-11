@@ -40,35 +40,24 @@ def main() -> int:
         error_console.print(t)
 
     try:
+        from . import __version__ as version
+
         exit_code = 0
         parser = ArgumentParser(
             prog="unicodecheck",
             allow_abbrev=False,
             formatter_class=ArgumentDefaultsHelpFormatter,
-            # TODO
-            description="",
+            description="Check if Unicode text files are Unicode-normalized",
             prefix_chars="-",
         )
-        parser.add_argument("paths", metavar="PATH", type=src,
-            nargs="+",
-            # TODO
-            help="describe input files",
-        )
-        parser.add_argument(
-            "-m",
-            "--mode",
-            type=upper,
-            choices=["NFC", "NFD", "NFKC", "NFKD"],
-            default="NFC",
-            # TODO
-            help="s",
-        )
-        # TODO
-        parser.add_argument("-d", "--diff", action="store_true", help="")
-        parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", type=uint, nargs="?", const=3, help="diff with NUMBER lines of context")
-        parser.add_argument("-r", "--recursive", action="store_true", help="")
-        parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden directories")
-        parser.add_argument("-v", "--verbose", action="store_true", help="include hidden directories")
+        parser.add_argument("paths", metavar="PATH", type=src, nargs="+", help="describe input file or directory (pass '-' to specify stdin)")
+        parser.add_argument("-V", "--version", action="version", version=version)
+        parser.add_argument("-m", "--mode", type=upper, choices=["NFC", "NFD", "NFKC", "NFKD"], default="NFC", help="target Unicode normalization")
+        parser.add_argument("-d", "--diff", action="store_true", help="show diffs between the original and normalized")
+        parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", type=uint, nargs="?", const=3, help="use unified diff with NUMBER lines of context [NUMBER=3]")
+        parser.add_argument("-r", "--recursive", action="store_true", help="follow the file tree rooted in each PATH argument")
+        parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden files and directories")
+        parser.add_argument("-v", "--verbose", action="store_true", help="report non-essential logs")
         args = parser.parse_args()
 
         mode: str = args.mode
@@ -128,7 +117,12 @@ def main() -> int:
                         fname = f.name
                         file = stream = open(f, "rb")
                     # バイナリファイルをフィルタ
-                    if is_binary(stream):
+                    isbin = is_binary(stream)
+                    if isbin is None:
+                        if verbose:
+                            print_verbose(f"{fpath}: Skip empty file")
+                        continue
+                    if isbin:
                         if verbose:
                             print_verbose(f"{fpath}: Skip binary file")
                         continue
@@ -145,7 +139,7 @@ def main() -> int:
                         else:
                             text = stream.read().decode(encoding)
                     except Exception:
-                        print_issue(f"{fpath}: Invalid unicode (or misunderstanding encoding)")
+                        print_issue(f"{fpath}: Invalid Unicode (or misunderstanding encoding)")
                         continue
                     # 正規形かテスト
                     if is_norm(text, mode):
