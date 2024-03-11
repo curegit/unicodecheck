@@ -26,8 +26,8 @@ options:
                         target Unicode normalization (default: NFC)
   -d, --diff            show diffs between the original and normalized (default: False)
   -u [NUMBER], -U [NUMBER], --unified [NUMBER]
-                        use unified diff with NUMBER lines of context [NUMBER=3] (default: None)
-  -r, --recursive       follow the file tree rooted in each PATH argument (default: False)
+                        use unified diff with NUMBER lines of context [NUMBER=3] (default: False)
+  -r, --recursive       follow the directory tree rooted in each PATH argument (default: False)
   -i, --include-hidden  include hidden files and directories (default: False)
   -v, --verbose         report non-essential logs (default: False)
 ```

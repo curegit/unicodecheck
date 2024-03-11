@@ -54,15 +54,15 @@ def main() -> int:
         parser.add_argument("-V", "--version", action="version", version=version)
         parser.add_argument("-m", "--mode", type=upper, choices=["NFC", "NFD", "NFKC", "NFKD"], default="NFC", help="target Unicode normalization")
         parser.add_argument("-d", "--diff", action="store_true", help="show diffs between the original and normalized")
-        parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", type=uint, nargs="?", const=3, help="use unified diff with NUMBER lines of context [NUMBER=3]")
-        parser.add_argument("-r", "--recursive", action="store_true", help="follow the file tree rooted in each PATH argument")
+        parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", default=False, type=uint, nargs="?", const=3, help="use unified diff with NUMBER lines of context [NUMBER=3]")
+        parser.add_argument("-r", "--recursive", action="store_true", help="follow the directory tree rooted in each PATH argument")
         parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden files and directories")
         parser.add_argument("-v", "--verbose", action="store_true", help="report non-essential logs")
         args = parser.parse_args()
 
         mode: str = args.mode
         show_diff: bool = args.diff
-        unified_diff: bool = args.unified is not None
+        unified_diff: bool = args.unified is not False
         context_lines: int = 0 if args.unified is None else args.unified
         recursive: bool = args.recursive
         include_hidden: bool = args.include_hidden
