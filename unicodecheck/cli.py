@@ -25,8 +25,8 @@ def main() -> int:
             console.print()
 
     def print_issue(text: str) -> None:
-        t = Text.assemble(("Info:", "bold yellow"), " ", text)
-        error_console.print(t)
+        t = Text.assemble(("Issue:", "bold yellow"), " ", text)
+        console.print(t)
 
     def print_verbose(text: str) -> None:
         t = Text.assemble(("Info:", "green"), " ", text)
@@ -54,20 +54,20 @@ def main() -> int:
         parser.add_argument("-V", "--version", action="version", version=version)
         parser.add_argument("-m", "--mode", type=upper, choices=["NFC", "NFD", "NFKC", "NFKD"], default="NFC", help="target Unicode normalization")
         parser.add_argument("-d", "--diff", action="store_true", help="show diffs between the original and normalized")
-        parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", default=False, type=uint, nargs="?", const=3, help="use unified diff with NUMBER lines of context [NUMBER=3]")
+        parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", default=False, type=uint, nargs="?", const=3, help="show unified diffs with NUMBER lines of context [NUMBER=3]")
         parser.add_argument("-r", "--recursive", action="store_true", help="follow the directory tree rooted in each PATH argument")
         parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden files and directories")
         parser.add_argument("-v", "--verbose", action="store_true", help="report non-essential logs")
         args = parser.parse_args()
 
         mode: str = args.mode
-        show_diff: bool = args.diff
+        show_diff: bool = args.diff or args.unified is not False
         unified_diff: bool = args.unified is not False
         context_lines: int = 0 if args.unified is None else args.unified
         recursive: bool = args.recursive
         include_hidden: bool = args.include_hidden
         verbose: bool = args.verbose
-        paths = list(args.paths)
+        paths: list[str | None] = list(args.paths)
 
         # stdin の出現を 1 回にする
         if None in paths:
@@ -98,7 +98,7 @@ def main() -> int:
                     else:
                         print_error(f"{path}: No such file or directory")
                         exit_code = 1
-                        break
+                        continue
                 except Exception:
                     print_error(f"{p}: Unprocessable path")
                     exit_code = 1
