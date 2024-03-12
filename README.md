@@ -10,6 +10,20 @@ pip3 install unicodecheck
 
 ## Usage
 
+### Quickstart
+
+```sh
+unicodecheck -iv SPAM.txt
+```
+
+To check files in a directory recursively:
+
+```sh
+unicodecheck -ivr Ham/Eggs/
+```
+
+### Synopsis
+
 The main program can be invoked either through the `unicodecheck` command or through the Python main module option `python3 -m unicodecheck`.
 
 ```txt
