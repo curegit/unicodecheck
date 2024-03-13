@@ -20,6 +20,7 @@ Spam, bacon, sausage, and Spam
 
     safe_text2 = """Spam, egg, Spam, Spam, bacon, and Spam
 Spam, Spam, Spam, egg, and Spam
+Spam, sausage, Spam, Spam, Spam, bacon, Spam, tomato, and Spam
 Spam, Spam, Spam, Spam, Spam, Spam, baked beans, Spam, Spam, Spam, and Spam
 """
 
