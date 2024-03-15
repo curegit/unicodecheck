@@ -2,7 +2,7 @@
 name = "unicodecheck"
 description = "Check if Unicode text files are Unicode-normalized"
 keywords = ["Unicode", "character encoding"]
-requires-python = ">=3.10"
+requires-python = ">=3.11"
 readme = "README.md"
 license = {text = "MIT"}
 maintainers = [
