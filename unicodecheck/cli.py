@@ -25,7 +25,7 @@ def main() -> int:
             console.print()
 
     def print_issue(text: str) -> None:
-        t = Text.assemble(("Issue:", "bold yellow"), " ", text)
+        t = Text.assemble(("Case:", "bold yellow"), " ", text)
         console.print(t)
 
     def print_verbose(text: str) -> None:
@@ -36,7 +36,7 @@ def main() -> int:
         error_console.print(text)
 
     def print_error(text: str) -> None:
-        t = Text.assemble(("Error:", "bold red"), " ", text)
+        t = Text.assemble(("FAIL:", "bold red"), " ", text)
         error_console.print(t)
 
     try:
