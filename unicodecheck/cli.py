@@ -1,8 +1,10 @@
+import functools
 import sys
 import glob
 import os.path
 from pathlib import Path
 from io import BufferedIOBase
+from collections.abc import Callable
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from rich.console import Console
 from rich.text import Text
@@ -11,26 +13,47 @@ from .core import is_binary, detect_unicode_enc, is_norm, normalize, diff
 
 
 def main() -> int:
+    exit_code = 0
+
     console = Console()
     error_console = Console(stderr=True)
 
+    class SigPipeExit(BaseException):
+        exit_code = 128 + 13
+
+    def catch_broken_pipe(action: Callable[..., None]):
+        @functools.wraps(action)
+        def wrapper(*args, **kwargs):
+            try:
+                action(*args, **kwargs)
+            except BrokenPipeError:
+                devnull = os.open(os.devnull, os.O_WRONLY)
+                os.dup2(devnull, sys.stdout.fileno())
+                raise SigPipeExit()
+
+        return wrapper
+
+    @catch_broken_pipe
     def write(text: str | None = None) -> None:
         if text is not None:
             console.print(text, end="")
 
+    @catch_broken_pipe
     def print(text: str | None = None) -> None:
         if text is not None:
             console.print(text)
         else:
             console.print()
 
+    @catch_broken_pipe
     def print_issue(text: str) -> None:
         t = Text.assemble(("Case:", "bold yellow"), " ", text)
         console.print(t)
 
+    @catch_broken_pipe
     def print_verbose(text: str) -> None:
         t = Text.assemble(("Info:", "green"), " ", text)
-        error_console.print(t)
+        console.print(t)
 
     def print_cancel(text: str) -> None:
         error_console.print(text)
@@ -42,7 +65,6 @@ def main() -> int:
     try:
         from . import __version__ as version
 
-        exit_code = 0
         parser = ArgumentParser(
             prog="unicodecheck",
             allow_abbrev=False,
@@ -98,7 +120,7 @@ def main() -> int:
                     else:
                         print_error(f"{path}: No such file or directory")
                         exit_code = 1
-                        continue
+                        break
                 except Exception:
                     print_error(f"{p}: Unprocessable path")
                     exit_code = 1
@@ -155,14 +177,20 @@ def main() -> int:
                         print()
                 # 想定しないエラーを強調表示して続行（パーミッションエラーなど）
                 except Exception as e:
-                    print_error(f"{fpath}: {e}")
+                    print_error(f"{fpath}: (Skip) {e}")
                 # ファイルの後処理
                 finally:
                     if file is not None:
                         file.close()
         return exit_code
 
+    except SigPipeExit as e:
+        exit_code = exit_code if exit_code != 0 else e.exit_code
+        print_cancel("SIGPIPE")
+        return exit_code
+
     # SIGINT での終了を短く表示
     except KeyboardInterrupt:
+        exit_code = 130
         print_cancel("KeyboardInterrupt")
-        return 130
+        return exit_code
