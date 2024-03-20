@@ -9,11 +9,9 @@ maintainers = [
   {name = "curegit", email = "contact@curegit.jp"}
 ]
 classifiers = [
-  "Programming Language :: Python :: 3",
   "Programming Language :: Python :: 3 :: Only",
   "Operating System :: OS Independent",
   "Topic :: Text Processing",
-  "License :: Freeware",
   "License :: OSI Approved :: MIT License",
   "Typing :: Typed",
 ]
