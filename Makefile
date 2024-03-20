@@ -23,19 +23,19 @@ format:
 
 data:
 	python3 -c 'import shutil; shutil.rmtree("data", ignore_errors=True)'
-	python3 ./makedata.py
+	python3 -X dev ./makedata.py
 
 test: data
-	python3 -m unicodecheck -m NFC -v data
-	python3 -m unicodecheck -m NFD -v data
-	python3 -m unicodecheck -m NFKC -v data
-	python3 -m unicodecheck -m NFKD -v data
+	python3 -X dev -m unicodecheck -m NFC -v data
+	python3 -X dev -m unicodecheck -m NFD -v data
+	python3 -X dev -m unicodecheck -m NFKC -v data
+	python3 -X dev -m unicodecheck -m NFKD -v data
 
 testdiff: data
-	python3 -m unicodecheck -m NFC -d -v data
-	python3 -m unicodecheck -m NFD -d -v data
-	python3 -m unicodecheck -m NFKC -d -v data
-	python3 -m unicodecheck -m NFKD -d -v data
+	python3 -X dev -m unicodecheck -m NFC -d -v data
+	python3 -X dev -m unicodecheck -m NFD -d -v data
+	python3 -X dev -m unicodecheck -m NFKC -d -v data
+	python3 -X dev -m unicodecheck -m NFKD -d -v data
 
 clean:
 	python3 -c 'import shutil; shutil.rmtree("dist", ignore_errors=True)'
