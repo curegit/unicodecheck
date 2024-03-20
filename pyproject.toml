@@ -14,13 +14,14 @@ classifiers = [
   "Operating System :: OS Independent",
   "Topic :: Text Processing",
   "License :: Freeware",
+  "License :: OSI Approved :: MIT License",
   "Typing :: Typed",
 ]
 dynamic = ["version"]
 dependencies = ["chardet", "rich"]
 
 [project.optional-dependencies]
-dev = ["build", "twine", "black", "mypy"]
+dev = ["pip", "setuptools", "build", "twine", "black", "mypy"]
 
 [project.scripts]
 unicodecheck = "unicodecheck.cli:main"
