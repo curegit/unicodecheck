@@ -29,7 +29,7 @@ def main() -> int:
             except BrokenPipeError:
                 devnull = os.open(os.devnull, os.O_WRONLY)
                 os.dup2(devnull, sys.stdout.fileno())
-                raise SigPipeExit()
+                raise SigPipeExit() from None
 
         return wrapper
 
@@ -184,6 +184,7 @@ def main() -> int:
                         file.close()
         return exit_code
 
+    # SIGPIPE での終了を通知
     except SigPipeExit as e:
         exit_code = exit_code if exit_code != 0 else e.exit_code
         print_cancel("SIGPIPE")
