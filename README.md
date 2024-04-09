@@ -44,7 +44,8 @@ options:
   -r, --recursive       follow the directory tree rooted in each PATH argument (default: False)
   -i, --include-hidden  include hidden files and directories (default: False)
   -b PATTERN [PATTERN ...], --blacklist PATTERN [PATTERN ...]
-                        notify if having PATTERN (default: None)
+                        notify if having PATTERN (case-sensitive) (default: None)
+  -e, --error           return non-zero exit code on detection (default: False)
   -v, --verbose         report non-essential logs (default: False)
 ```
 

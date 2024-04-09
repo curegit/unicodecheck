@@ -13,7 +13,11 @@ from .core import is_binary, detect_unicode_enc, is_norm, normalize, diff
 
 
 def main() -> int:
-    exit_code = 0
+    ok_code = 0
+    error_code = 1
+    issue_code = 3
+
+    exit_code = ok_code
 
     console = Console()
     error_console = Console(stderr=True)
@@ -79,7 +83,8 @@ def main() -> int:
         parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", default=False, type=uint, nargs="?", const=3, help="show unified diffs with NUMBER lines of context [NUMBER=3]")
         parser.add_argument("-r", "--recursive", action="store_true", help="follow the directory tree rooted in each PATH argument")
         parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden files and directories")
-        parser.add_argument("-b", "--blacklist", metavar="PATTERN", type=nonempty, nargs="+", action="extend", help="notify if having PATTERN")
+        parser.add_argument("-b", "--blacklist", metavar="PATTERN", type=nonempty, nargs="+", action="extend", help="notify if having PATTERN (case-sensitive)")
+        parser.add_argument("-e", "--error", action="store_true", help="return non-zero exit code on detection")
         parser.add_argument("-v", "--verbose", action="store_true", help="report non-essential logs")
         args = parser.parse_args()
 
@@ -89,6 +94,8 @@ def main() -> int:
         context_lines: int = 0 if args.unified is None else args.unified
         recursive: bool = args.recursive
         include_hidden: bool = args.include_hidden
+        blacklist: list[str] = [] if args.blacklist is None else list(args.blacklist)
+        error: bool = args.error
         verbose: bool = args.verbose
         paths: list[str | None] = list(args.paths)
 
@@ -120,11 +127,11 @@ def main() -> int:
                     # 存在しないパスの場合
                     else:
                         print_error(f"{path}: No such file or directory")
-                        exit_code = 1
+                        exit_code = error_code
                         break
                 except Exception:
                     print_error(f"{p}: Unprocessable path")
-                    exit_code = 1
+                    exit_code = error_code
                     break
             # ファイルごとに処理
             for f in files:
@@ -152,7 +159,7 @@ def main() -> int:
                     # ユニコードの符号方式を調べる
                     encoding = detect_unicode_enc(stream)
                     if encoding is None:
-                        if args.verbose:
+                        if verbose:
                             print_verbose(f"{fpath}: Skip non-Unicode file")
                         continue
                     # デコードをテスト
@@ -162,19 +169,24 @@ def main() -> int:
                         else:
                             text = stream.read().decode(encoding)
                     except Exception:
+                        if error and exit_code == ok_code:
+                            exit_code = issue_code
                         print_issue(f"{fpath}: Invalid Unicode (or misunderstanding encoding)")
                         continue
                     # ブラックリスト照合
-                    if args.blacklist is not None:
-                        for pat in args.blacklist:
-                            if text.find(pat) >= 0:
-                                print_issue(f"{fpath}: Having pattern: {pat}")
+                    for pat in blacklist:
+                        if text.find(pat) >= 0:
+                            if error and exit_code == ok_code:
+                                exit_code = issue_code
+                            print_issue(f"{fpath}: Having pattern: {pat}")
                     # 正規形かテスト
                     if is_norm(text, mode):
                         if verbose:
                             print_verbose(f"{fpath}: OK ({mode})")
                         continue
                     # 正規形でない場合
+                    if error and exit_code == ok_code:
+                        exit_code = issue_code
                     print_issue(f"{fpath}: Not normalized in {mode}")
                     if show_diff:
                         normalized = normalize(text, mode)
@@ -192,7 +204,7 @@ def main() -> int:
 
     # SIGPIPE での終了を通知
     except SigPipeExit as e:
-        exit_code = exit_code if exit_code != 0 else e.exit_code
+        exit_code = exit_code if exit_code != ok_code else e.exit_code
         print_cancel("SIGPIPE")
         return exit_code
 
