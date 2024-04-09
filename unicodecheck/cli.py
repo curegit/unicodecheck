@@ -4,11 +4,11 @@ import glob
 import os.path
 from pathlib import Path
 from io import BufferedIOBase
-from collections.abc import Callable
+from collections.abc import Callable, Iterable
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from rich.console import Console
 from rich.text import Text
-from .args import uint, src, upper
+from .args import nonempty, uint, src, upper
 from .core import is_binary, detect_unicode_enc, is_norm, normalize, diff
 
 
@@ -79,6 +79,7 @@ def main() -> int:
         parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", default=False, type=uint, nargs="?", const=3, help="show unified diffs with NUMBER lines of context [NUMBER=3]")
         parser.add_argument("-r", "--recursive", action="store_true", help="follow the directory tree rooted in each PATH argument")
         parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden files and directories")
+        parser.add_argument("-b", "--blacklist", metavar="PATTERN", type=nonempty, nargs="+", action="extend", help="notify if having PATTERN")
         parser.add_argument("-v", "--verbose", action="store_true", help="report non-essential logs")
         args = parser.parse_args()
 
@@ -97,17 +98,17 @@ def main() -> int:
             paths.append(None)
         # 各入力パスについて処理
         for p in paths:
-            files: list[Path | None] = []
+            files: Iterable[Path | None]
             # stdin の場合
             if p is None:
-                files.append(None)
+                files = [None]
             # それ以外
             else:
                 try:
                     path = Path(p).resolve(strict=False)
                     # 存在するファイルならそれを追加
                     if path.is_file():
-                        files.append(path)
+                        files = [path]
                     # 存在するディレクトリなら中身を追加
                     elif path.is_dir():
                         if recursive:
@@ -115,7 +116,7 @@ def main() -> int:
                         else:
                             pattern = os.path.join(glob.escape(str(path)), "*")
                         globs = (Path(e) for e in glob.iglob(pattern, recursive=recursive, include_hidden=include_hidden))
-                        files += [f for f in globs if f.is_file()]
+                        files = (f for f in globs if f.is_file())
                     # 存在しないパスの場合
                     else:
                         print_error(f"{path}: No such file or directory")
@@ -163,6 +164,11 @@ def main() -> int:
                     except Exception:
                         print_issue(f"{fpath}: Invalid Unicode (or misunderstanding encoding)")
                         continue
+                    # ブラックリスト照合
+                    if args.blacklist is not None:
+                        for pat in args.blacklist:
+                            if text.find(pat) >= 0:
+                                print_issue(f"{fpath}: Having pattern: {pat}")
                     # 正規形かテスト
                     if is_norm(text, mode):
                         if verbose:

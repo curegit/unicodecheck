@@ -43,6 +43,8 @@ options:
                         show unified diffs with NUMBER lines of context [NUMBER=3] (default: False)
   -r, --recursive       follow the directory tree rooted in each PATH argument (default: False)
   -i, --include-hidden  include hidden files and directories (default: False)
+  -b PATTERN [PATTERN ...], --blacklist PATTERN [PATTERN ...]
+                        notify if having PATTERN (default: None)
   -v, --verbose         report non-essential logs (default: False)
 ```
 

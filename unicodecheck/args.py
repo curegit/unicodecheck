@@ -1,3 +1,11 @@
+# 非空列を受ける変換関数
+def nonempty(string: str) -> str:
+    if string:
+        return string
+    else:
+        raise ValueError()
+
+
 # 非負整数を受ける変換関数
 def uint(string: str | int) -> int:
     value = int(string)
