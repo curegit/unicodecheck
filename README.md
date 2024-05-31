@@ -29,7 +29,11 @@ The main program can be invoked either through the `unicodecheck` command or thr
 ```txt
 usage: unicodecheck [-h] [-V] [-m {NFC,NFD,NFKC,NFKD}] [-d] [-u [NUMBER]] [-r] [-i] [-v]
                     PATH [PATH ...]
+```
 
+### Options
+
+```txt
 positional arguments:
   PATH                  describe input file or directory (pass '-' to specify stdin)
 
@@ -53,7 +57,7 @@ options:
 
 ### Check whether filenames are normalized
 
-`convmv` command is suitable.
+The `convmv` command is a good alternative to using this application.
 
 #### NFC
 
