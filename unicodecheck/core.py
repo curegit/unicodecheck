@@ -1,9 +1,15 @@
 import os
 import difflib
 import unicodedata
+from typing import Literal, TypeAlias
 from collections.abc import Iterable
 from io import BytesIO, IOBase
 from chardet import UniversalDetector
+
+
+ModeStr: TypeAlias = Literal["NFC", "NFD", "NFKC", "NFKD"]
+
+modes: tuple[Literal["NFC"], Literal["NFD"], Literal["NFKC"], Literal["NFKD"]] = "NFC", "NFD", "NFKC", "NFKD"
 
 
 # ファイルがバイナリかテキストか判定する (空列なら None)
@@ -71,9 +77,9 @@ def diff(original: str, normalized: str, *, filename: str, unified=False, n=3) -
         return difflib.ndiff(a, b)
 
 
-def is_norm(text: str, mode: str) -> bool:
+def is_norm(text: str, mode: ModeStr) -> bool:
     return unicodedata.is_normalized(mode, text)
 
 
-def normalize(text: str, mode: str) -> str:
+def normalize(text: str, mode: ModeStr) -> str:
     return unicodedata.normalize(mode, text)

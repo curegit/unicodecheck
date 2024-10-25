@@ -9,7 +9,7 @@ from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from rich.console import Console
 from rich.text import Text
 from .args import nonempty, uint, src, upper
-from .core import is_binary, detect_unicode_enc, is_norm, normalize, diff
+from .core import modes, ModeStr, is_binary, detect_unicode_enc, is_norm, normalize, diff
 
 
 def main() -> int:
@@ -78,7 +78,7 @@ def main() -> int:
         )
         parser.add_argument("paths", metavar="PATH", type=src, nargs="+", help="describe input file or directory (pass '-' to specify stdin)")
         parser.add_argument("-V", "--version", action="version", version=version)
-        parser.add_argument("-m", "--mode", type=upper, choices=["NFC", "NFD", "NFKC", "NFKD"], default="NFC", help="target Unicode normalization")
+        parser.add_argument("-m", "--mode", type=upper, choices=modes, default="NFC", help="target Unicode normalization")
         parser.add_argument("-d", "--diff", action="store_true", help="show diffs between the original and normalized")
         parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", default=False, type=uint, nargs="?", const=3, help="show unified diffs with NUMBER lines of context [NUMBER=3]")
         parser.add_argument("-r", "--recursive", action="store_true", help="follow the directory tree rooted in each PATH argument")
@@ -88,7 +88,7 @@ def main() -> int:
         parser.add_argument("-v", "--verbose", action="store_true", help="report non-essential logs")
         args = parser.parse_args()
 
-        mode: str = args.mode
+        mode: ModeStr = args.mode
         show_diff: bool = args.diff or args.unified is not False
         unified_diff: bool = args.unified is not False
         context_lines: int = 0 if args.unified is None else args.unified
