@@ -7,8 +7,8 @@ if __name__ == "__main__":
     os.makedirs("data", exist_ok=True)
 
     dirname = "data"
-    modes = ["NFC", "NFD", "NFKC", "NFKD"]
-    encodings = ["utf_8", "utf_16", "utf_32"]
+    modes = "NFC", "NFD", "NFKC", "NFKD"
+    encodings = "utf_8", "utf_16", "utf_32"
 
     safe_text1 = """Egg and bacon
 Egg, sausage, and bacon
