@@ -4,7 +4,8 @@ description = "Check if Unicode text files are Unicode-normalized"
 keywords = ["Unicode", "character encoding"]
 requires-python = ">=3.11"
 readme = "README.md"
-license = {text = "MIT"}
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
 maintainers = [
   {name = "curegit", email = "contact@curegit.jp"}
 ]
@@ -12,14 +13,13 @@ classifiers = [
   "Programming Language :: Python :: 3 :: Only",
   "Operating System :: OS Independent",
   "Topic :: Text Processing",
-  "License :: OSI Approved :: MIT License",
   "Typing :: Typed",
 ]
 dynamic = ["version"]
 dependencies = ["chardet", "rich"]
 
 [project.optional-dependencies]
-dev = ["pip", "setuptools", "build", "twine", "black", "mypy"]
+dev = ["pip", "setuptools >= 78", "build", "twine", "black", "mypy"]
 
 [project.scripts]
 unicodecheck = "unicodecheck.cli:main"
