@@ -75,6 +75,7 @@ def main() -> int:
             formatter_class=ArgumentDefaultsHelpFormatter,
             description="Check if Unicode text files are Unicode-normalized",
             prefix_chars="-",
+            epilog="All arguments after '--' are considered as positional arguments.",
         )
         parser.add_argument("paths", metavar="PATH", type=src, nargs="+", help="describe input file or directory (pass '-' to specify stdin)")
         parser.add_argument("-V", "--version", action="version", version=version)
