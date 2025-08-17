@@ -178,7 +178,7 @@ def main() -> int:
                         if text.find(pat) >= 0:
                             if error and exit_code == ok_code:
                                 exit_code = issue_code
-                            print_issue(f"{fpath}: Having pattern: {pat}")
+                            print_issue(f"{fpath}: Having pattern: {repr(pat)}")
                     # 正規形かテスト
                     if is_norm(text, mode):
                         if verbose:
