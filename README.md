@@ -5,7 +5,7 @@ Simple tool to check if Unicode text files are Unicode-normalized
 ## Install
 
 ```sh
-pip3 install unicodecheck
+pip install unicodecheck
 ```
 
 ## Usage

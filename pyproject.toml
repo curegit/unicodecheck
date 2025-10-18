@@ -19,7 +19,7 @@ dynamic = ["version"]
 dependencies = ["chardet", "rich"]
 
 [project.optional-dependencies]
-dev = ["pip", "setuptools >= 78", "build", "twine", "black", "mypy"]
+dev = ["pip", "build", "twine", "black", "mypy"]
 
 [project.scripts]
 unicodecheck = "unicodecheck.cli:main"
@@ -29,7 +29,7 @@ homepage = "https://github.com/curegit/unicodecheck"
 repository = "https://github.com/curegit/unicodecheck.git"
 
 [build-system]
-requires = ["setuptools"]
+requires = ["setuptools >= 78"]
 build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
