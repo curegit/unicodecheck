@@ -1,6 +1,6 @@
 [project]
 name = "unicodecheck"
-description = "Check if Unicode text files are Unicode-normalized"
+description = "A simple tool to check if Unicode text files are Unicode-normalized"
 keywords = ["Unicode", "character encoding"]
 requires-python = ">=3.11"
 readme = "README.md"

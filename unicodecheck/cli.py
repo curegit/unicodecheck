@@ -78,14 +78,14 @@ def main() -> int:
             prefix_chars="-",
             epilog="All arguments after '--' are considered as positional arguments.",
         )
-        parser.add_argument("paths", metavar="PATH", type=src, nargs="+", help="describe input file or directory (pass '-' to specify stdin)")
+        parser.add_argument("paths", metavar="PATH", type=src, nargs="+", help="specify an input file or directory (pass '-' to specify stdin)")
         parser.add_argument("-V", "--version", action="version", version=version)
         parser.add_argument("-m", "--mode", type=upper, choices=modes, default="NFC", help="target Unicode normalization")
         parser.add_argument("-d", "--diff", action="store_true", help="show diffs between the original and normalized")
         parser.add_argument("-u", "-U", "--unified", metavar="NUMBER", default=False, type=uint, nargs="?", const=3, help="show unified diffs with NUMBER lines of context [NUMBER=3]")
         parser.add_argument("-r", "--recursive", action="store_true", help="follow the directory tree rooted in each PATH argument")
         parser.add_argument("-i", "--include-hidden", action="store_true", help="include hidden files and directories")
-        parser.add_argument("-b", "--blacklist", metavar="PATTERN", type=nonempty, nargs="+", action="extend", help="notify if having PATTERN (case-sensitive)")
+        parser.add_argument("-b", "--blacklist", metavar="PATTERN", type=nonempty, nargs="+", action="extend", help="notify if it contains PATTERN (case-sensitive)")
         parser.add_argument("-e", "--error", action="store_true", help="return non-zero exit code on detection")
         parser.add_argument("-v", "--verbose", action="store_true", help="report non-essential logs")
         args = parser.parse_args()

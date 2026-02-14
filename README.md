@@ -1,6 +1,6 @@
 # Unicodecheck
 
-Simple tool to check if Unicode text files are Unicode-normalized
+A simple tool to check if Unicode text files are Unicode-normalized
 
 ## Install
 
@@ -35,7 +35,7 @@ usage: unicodecheck [-h] [-V] [-m {NFC,NFD,NFKC,NFKD}] [-d] [-u [NUMBER]] [-r] [
 
 ```txt
 positional arguments:
-  PATH                  describe input file or directory (pass '-' to specify stdin)
+  PATH                  specify an input file or directory (pass '-' to specify stdin)
 
 options:
   -h, --help            show this help message and exit
@@ -48,7 +48,7 @@ options:
   -r, --recursive       follow the directory tree rooted in each PATH argument (default: False)
   -i, --include-hidden  include hidden files and directories (default: False)
   -b PATTERN [PATTERN ...], --blacklist PATTERN [PATTERN ...]
-                        notify if having PATTERN (case-sensitive) (default: None)
+                        notify if it contains PATTERN (case-sensitive) (default: None)
   -e, --error           return non-zero exit code on detection (default: False)
   -v, --verbose         report non-essential logs (default: False)
 ```
@@ -74,7 +74,7 @@ convmv -f utf8 -t utf8 --nfd -r ./
 ## Notes
 
 - This tool doesn't provide auto in-place (write) file normalization because Unicode normalization doesn't guarantee content equivalence.
-- The procedure for determining the binary file refers to Git's algorithm.
+- The procedure for determining binary files is based on Git's algorithm.
 
 ## License
 
