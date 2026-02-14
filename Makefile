@@ -16,7 +16,7 @@ publish: build
 	python3 -m twine upload -u __token__ --repository-url "https://upload.pypi.org/legacy/" dist/*
 
 check:
-	python3 -m mypy unicodecheck makedata.py
+	python3 -m mypy --strict --python-version 3.11 unicodecheck makedata.py
 
 format:
 	python3 -m black -l 200 unicodecheck makedata.py

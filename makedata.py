@@ -2,12 +2,14 @@
 
 import os
 import unicodedata
+from typing import Literal
 
-if __name__ == "__main__":
+
+def main() -> None:
     os.makedirs("data", exist_ok=True)
 
     dirname = "data"
-    modes = "NFC", "NFD", "NFKC", "NFKD"
+    modes: tuple[Literal["NFC", "NFD", "NFKC", "NFKD"], ...] = "NFC", "NFD", "NFKC", "NFKD"
     encodings = "utf_8", "utf_16", "utf_32"
 
     safe_text1 = """Egg and bacon
@@ -38,3 +40,7 @@ Spam, Spam, Spam, Spam, Spam, Spam, baked beans, Spam, Spam, Spam, and Spam
                 f.write(safe_text1.encode(enc))
                 f.write((text + "\n").encode(enc))
                 f.write(safe_text2.encode(enc))
+
+
+if __name__ == "__main__":
+    main()

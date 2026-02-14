@@ -4,6 +4,7 @@ import glob
 import os.path
 from pathlib import Path
 from io import BufferedIOBase
+from typing import Any
 from collections.abc import Callable, Iterable
 from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
 from rich.console import Console
@@ -26,9 +27,9 @@ def main() -> int:
         console = Console()
         error_console = Console(stderr=True)
 
-        def catch_broken_pipe(action: Callable[..., None]):
+        def catch_broken_pipe(action: Callable[..., None]) -> Callable[..., None]:
             @functools.wraps(action)
-            def wrapper(*args, **kwargs):
+            def wrapper(*args: Any, **kwargs: Any) -> None:
                 try:
                     action(*args, **kwargs)
                 except BrokenPipeError:

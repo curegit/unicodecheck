@@ -6,7 +6,6 @@ from collections.abc import Iterable
 from io import BytesIO, IOBase
 from chardet import UniversalDetector
 
-
 ModeStr: TypeAlias = Literal["NFC", "NFD", "NFKC", "NFKD"]
 
 modes: tuple[Literal["NFC"], Literal["NFD"], Literal["NFKC"], Literal["NFKD"]] = "NFC", "NFD", "NFKC", "NFKD"
@@ -66,7 +65,7 @@ def detect_unicode_enc(stream: bytes | IOBase) -> str | None:
         return None
 
 
-def diff(original: str, normalized: str, *, filename: str, unified=False, n=3) -> Iterable[str]:
+def diff(original: str, normalized: str, *, filename: str, unified: bool = False, n: int = 3) -> Iterable[str]:
     a = original.splitlines(keepends=True)
     b = normalized.splitlines(keepends=True)
     if unified:
