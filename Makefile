@@ -19,7 +19,7 @@ check:
 	python3 -m mypy --strict --python-version 3.11 unicodecheck makedata.py
 
 format:
-	python3 -m black -l 200 unicodecheck makedata.py
+	python3 -m black -l 200 --target-version py311 unicodecheck makedata.py
 
 data:
 	python3 -c 'import shutil; shutil.rmtree("data", ignore_errors=True)'
