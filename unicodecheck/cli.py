@@ -197,6 +197,7 @@ def main() -> int:
                         print()
                 # 想定しないエラーを強調表示して続行（パーミッションエラーなど）
                 except Exception as e:
+                    exit_code = 1
                     print_error(f"{fpath}: (Skip) {e}")
                 # ファイルの後処理
                 finally:
