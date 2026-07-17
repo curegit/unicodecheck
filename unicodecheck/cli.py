@@ -42,7 +42,7 @@ def main() -> int:
         @catch_broken_pipe
         def write(text: str | None = None) -> None:
             if text is not None:
-                console.print(text, end="")
+                console.out(text, end="", highlight=False)
 
         @catch_broken_pipe
         def print(text: str | None = None) -> None:
