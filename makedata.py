@@ -10,7 +10,7 @@ def main() -> None:
 
     dirname = "data"
     modes: tuple[Literal["NFC", "NFD", "NFKC", "NFKD"], ...] = "NFC", "NFD", "NFKC", "NFKD"
-    encodings = "utf_8", "utf_16", "utf_32"
+    encodings = "utf_8", "utf_8_sig", "utf_16", "utf_32"
 
     safe_text1 = """Egg and bacon
 Egg, sausage, and bacon

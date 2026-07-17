@@ -41,7 +41,7 @@ def is_binary(stream: bytes | IOBase) -> bool | None:
 
 
 # Unicode エンコードを検出して返す
-# utf-8, utf-16, utf-32 のどれでもない場合は None を返す
+# utf-8, utf-8-sig, utf-16, utf-32 のどれでもない場合は None を返す
 def detect_unicode_enc(stream: bytes | IOBase) -> str | None:
     match stream:
         case IOBase() as b:
@@ -59,7 +59,9 @@ def detect_unicode_enc(stream: bytes | IOBase) -> str | None:
     detector.close()
     buf.seek(pos)
     enc = detector.result["encoding"]
-    if enc and (encoding := enc.lower()) in ["utf-8", "utf-16", "utf-32"]:
+    if enc and (encoding := enc.lower()) in ["ascii", "utf-8", "utf-8-sig", "utf-16", "utf-32"]:
+        if enc == "ascii":
+            return "utf-8"
         return encoding
     else:
         return None
