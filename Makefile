@@ -22,7 +22,7 @@ format:
 	python3 -m black -l 200 --target-version py311 unicodecheck makedata.py
 
 data:
-	python3 -c 'import shutil; shutil.rmtree("data", ignore_errors=True)'
+	python3 -c "import shutil; shutil.rmtree('data', ignore_errors=True)"
 	python3 -X dev ./makedata.py
 
 test: data
@@ -38,8 +38,8 @@ testdiff: data
 	python3 -X dev -m unicodecheck -m NFKD -d -v data
 
 clean:
-	python3 -c 'import shutil; shutil.rmtree("dist", ignore_errors=True)'
-	python3 -c 'import shutil; shutil.rmtree("build", ignore_errors=True)'
-	python3 -c 'import shutil; shutil.rmtree("unicodecheck.egg-info", ignore_errors=True)'
-	python3 -c 'import shutil; shutil.rmtree(".mypy_cache", ignore_errors=True)'
-	python3 -c 'import shutil; shutil.rmtree("data", ignore_errors=True)'
+	python3 -c "import shutil; shutil.rmtree('dist', ignore_errors=True)"
+	python3 -c "import shutil; shutil.rmtree('build', ignore_errors=True)"
+	python3 -c "import shutil; shutil.rmtree('unicodecheck.egg-info', ignore_errors=True)"
+	python3 -c "import shutil; shutil.rmtree('.mypy_cache', ignore_errors=True)"
+	python3 -c "import shutil; shutil.rmtree('data', ignore_errors=True)"
